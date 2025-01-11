@@ -1,0 +1,89 @@
+#Step-by-Step Guide to Implement a Spam Detection Model using Naive Bayes and Scikit-learn
+#Step 1: Install Required Libraries
+pip install scikit-learn pandas numpy matplotlib seaborn
+
+#Step 2: Import Necessary Libraries
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+'''Step 3: Load and Explore the Dataset
+Let’s assume we are working with a dataset named spam.csv. This dataset contains email messages and labels indicating whether the message is spam or not'''
+
+# Load the dataset (assuming spam.csv exists in the working directory)
+df = pd.read_csv('spam.csv')
+
+# Explore the first few rows of the dataset
+df.head()
+
+# Check for any missing values in the dataset
+df.isnull().sum()
+
+Step 4: Data Preprocessing
+
+In this step, we will separate the email texts and their corresponding labels. We'll also split the dataset into training and testing sets.
+
+# Feature column: 'message' contains the email text
+# Target column: 'label' contains 0 for non-spam and 1 for spam
+X = df['message']  # Emails as feature data
+y = df['label']    # Spam or not as target labels
+
+# Split the dataset into 70% training data and 30% test data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+Step 5: Text Vectorization
+
+Emails need to be converted into numeric form before being passed into a machine learning algorithm. Here, we’ll use the CountVectorizer from Scikit-learn to transform the text into a matrix of token counts.
+
+# Initialize CountVectorizer for transforming text data into vectors
+vectorizer = CountVectorizer()
+
+# Fit and transform the training data (emails)
+X_train_counts = vectorizer.fit_transform(X_train)
+
+# Only transform the test data (no fitting here to prevent data leakage)
+X_test_counts = vectorizer.transform(X_test)
+
+Step 6: Training the Naive Bayes Model
+# Initialize the Multinomial Naive Bayes classifier
+nb_classifier = MultinomialNB()
+
+# Train the model with the training data
+nb_classifier.fit(X_train_counts, y_train)
+
+#Step 7: Making Predictions and Evaluating the Model
+#Once the model is trained, we can evaluate its performance by predicting the labels of the test set and calculating accuracy, confusion matrix, and classification report.
+
+# Make predictions on the test set
+y_pred = nb_classifier.predict(X_test_counts)
+
+# Calculate the accuracy of the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Model Accuracy: {accuracy * 100:.2f}%')
+
+# Generate the confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Visualize the confusion matrix using Seaborn heatmap
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='coolwarm')
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted Labels')
+plt.ylabel('Actual Labels')
+plt.show()
+
+# Print the classification report for precision, recall, and f1-score
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+#Step 8: Saving the Model (Optional)
+#If you want to save your model for future use, you can use joblib or pickle:
+# Optional: Save the model to a file
+import joblib
+joblib.dump(nb_classifier, 'spam_classifier_model.pkl')
+

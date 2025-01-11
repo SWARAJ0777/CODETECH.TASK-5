@@ -46,3 +46,6 @@ For splitting the dataset into training and testing sets.
 For generating evaluation metrics like accuracy, confusion matrix, and classification reports.
 CountVectorizer: A tool in Scikit-learn used to convert text data into a numerical format (bag-of-words) suitable for machine learning models.
 Matplotlib & Seaborn: Used for visualizing the confusion matrix and making the evaluation results easier to understand.
+
+output:![output](https://github.com/user-attachments/assets/e9bf13af-f12e-4125-b42e-bb7a0b1dc7af)
+
